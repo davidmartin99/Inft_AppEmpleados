@@ -1,9 +1,13 @@
 package com.example.intf_appempleados
 
-
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -15,21 +19,33 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import com.example.intf_appempleados.ui.viewmodel.AppViewModel
-import androidx.compose.material3.BottomNavigation
-import androidx.compose.material3.BottomNavigationItem
+import com.example.intf_appempleados.navigation.SetupNavGraph
 
 
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MainScreen(viewModel = AppViewModel())
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainActivity(viewModel: AppViewModel) {
-    var selectedTab by remember { mutableStateOf(0) }
+fun MainScreen(viewModel: AppViewModel) {
+    val navHostController = rememberNavController()
+
+    // Estado para controlar la pantalla seleccionada
+    var selectedTab by remember { mutableStateOf("temperature") }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Ayuda Empleados Multinacional") },
+                title = { Text("Empresa XYZ") },
                 actions = {
                     IconButton(onClick = { /* Acción de ajustes */ }) {
                         Icon(Icons.Default.Settings, contentDescription = "Ajustes")
@@ -41,55 +57,59 @@ fun MainActivity(viewModel: AppViewModel) {
             )
         },
         bottomBar = {
-            BottomNavigation(
-                selectedItemIndex = selectedTab,
-                onItemSelected = { selectedTab = it }
-            ) {
-                BottomNavigationItem(
-                    icon = { Icon(Icons.Default.TemperatureHigh, contentDescription = "Conversión de Temperatura") },
-                    label = { Text("Temperatura") },
-                    selected = selectedTab == 0,
-                    onClick = { selectedTab = 0 }
-                )
-                BottomNavigationItem(
-                    icon = { Icon(Icons.Default.AccessTime, contentDescription = "Horas") },
-                    label = { Text("Horas") },
-                    selected = selectedTab == 1,
-                    onClick = { selectedTab = 1 }
-                )
-                BottomNavigationItem(
-                    icon = { Icon(Icons.Default.Phone, contentDescription = "Contactos") },
-                    label = { Text("Contactos") },
-                    selected = selectedTab == 2,
-                    onClick = { selectedTab = 2 }
-                )
+            // Barra inferior personalizada con íconos
+            Row {
+                // Ícono de Temperatura
+                IconButton(onClick = {
+                    selectedTab = "temperature"
+                    navHostController.navigate("temperature")  // Navega a la pantalla de temperatura
+                }) {
+                    Icon(Icons.Default.Home, contentDescription = "Temperatura")
+                }
+
+                // Ícono de Hora
+                IconButton(onClick = {
+                    selectedTab = "time"
+                    navHostController.navigate("time")  // Navega a la pantalla de hora
+                }) {
+                    Icon(Icons.Default.Home, contentDescription = "Hora")
+                }
+
+                // Ícono de Datos
+                IconButton(onClick = {
+                    selectedTab = "data"
+                    navHostController.navigate("data")  // Navega a la pantalla de datos
+                }) {
+                    Icon(Icons.Default.Home, contentDescription = "Datos")
+                }
             }
         }
     ) { paddingValues ->
-        when (selectedTab) {
-            0 -> TemperatureConversionScreen(viewModel)
-            1 -> CitiesTimeScreen(viewModel, "Madrid") // Aquí se puede pasar la ciudad actual
-            2 -> ContactsScreen(viewModel)
-        }
+        // Aquí se maneja la navegación, pasa paddingValues si es necesario
+        SetupNavGraph(navController = navHostController, viewModel = viewModel, paddingValues = paddingValues)
     }
 }
 
+
 @Composable
-fun TemperatureConversionScreen(viewModel: AppViewModel) {
-    // Tu código para la conversión de temperatura
+fun TemperatureScreen(viewModel: AppViewModel) {
     Text(text = "Pantalla de Conversión de Temperatura")
 }
 
 @Composable
-fun CitiesTimeScreen(viewModel: AppViewModel, city: String) {
-    // Tu código para mostrar la hora en las diferentes ciudades
+fun TimeScreen(viewModel: AppViewModel, city: String) {
     Text(text = "Pantalla de Hora en las ciudades - Ciudad actual: $city")
 }
 
 @Composable
-fun ContactsScreen(viewModel: AppViewModel) {
-    // Tu código para mostrar los contactos
+fun DataScreen(viewModel: AppViewModel) {
     Text(text = "Pantalla de Contactos")
 }
 
 
+// Preview de MainScreen
+@Preview(showBackground = true)
+@Composable
+fun PreviewMainScreen() {
+    MainScreen(viewModel = AppViewModel())
+}
