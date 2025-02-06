@@ -4,31 +4,45 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import com.example.intf_appempleados.ui.viewmodel.AppViewModel
 import com.example.intf_appempleados.navigation.SetupNavGraph
-import java.lang.reflect.Modifier
+import com.example.intf_appempleados.ui.theme.GreenColor
+import com.example.intf_appempleados.ui.theme.RedColor
+import com.example.intf_appempleados.ui.theme.SpectralFontFamily
+import com.example.intf_appempleados.ui.theme.YellowColor
 
 
 class MainActivity : ComponentActivity() {
@@ -59,7 +73,16 @@ fun MainScreen(viewModel: AppViewModel) {
 
                         )
 
-                        Text("Splanot")
+                        Text(
+                            text = "Splanot",
+                            style = TextStyle(
+                                fontFamily = SpectralFontFamily,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 26.sp, // Título más grande
+                                color = Color.White
+                            ),
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
                     }
                 },
                 actions = {
@@ -69,58 +92,60 @@ fun MainScreen(viewModel: AppViewModel) {
                     IconButton(onClick = { /* Acción de login */ }) {
                         Icon(Icons.Default.Person, contentDescription = "Login")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Companion.Gray
+
+                )
+
             )
         },
         bottomBar = {
-            // Barra inferior personalizada con íconos
-            Row {
-                // Ícono de Temperatura
-                IconButton(onClick = {
-                    selectedTab = "temperature"
-                    navHostController.navigate("temperature")  // Navega a la pantalla de temperatura
-                }) {
-                    Icon(Icons.Default.Home, contentDescription = "Temperatura")
-                }
+            BottomAppBar(
+                containerColor = Color.Companion.Gray,
+                contentColor = Color.White,
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp), // Espaciado horizontal
+                    horizontalArrangement = Arrangement.SpaceBetween, // Espaciado entre íconos
+                    verticalAlignment = Alignment.CenterVertically
+                )
+                {
+                    // Ícono de Temperatura
+                    // Temperature Icon
+                    IconButton(onClick = {
+                        selectedTab = "temperature"
+                        navHostController.navigate("temperature")  // Navigate to temperature screen
+                    }) {
+                        Icon(Icons.Default.Home, contentDescription = "Temperature")
+                    }
 
-                // Ícono de Hora
-                IconButton(onClick = {
-                    selectedTab = "time"
-                    navHostController.navigate("time")  // Navega a la pantalla de hora
-                }) {
-                    Icon(Icons.Default.Home, contentDescription = "Hora")
-                }
+                    // Ícono de Hora
+                    IconButton(onClick = {
+                        selectedTab = "time"
+                        navHostController.navigate("time")  // Navega a la pantalla de hora
+                    }) {
+                        Icon(Icons.Default.Home, contentDescription = "Hora")
+                    }
 
-                // Ícono de Datos
-                IconButton(onClick = {
-                    selectedTab = "data"
-                    navHostController.navigate("data")  // Navega a la pantalla de datos
-                }) {
-                    Icon(Icons.Default.Home, contentDescription = "Datos")
+                    // Ícono de Datos
+                    IconButton(onClick = {
+                        selectedTab = "data"
+                        navHostController.navigate("data")  // Navega a la pantalla de datos
+                    }) {
+                        Icon(Icons.Default.Home, contentDescription = "Datos")
+                    }
                 }
             }
         }
     ) { paddingValues ->
         // Aquí se maneja la navegación, pasa paddingValues si es necesario
         SetupNavGraph(navController = navHostController, viewModel = viewModel, paddingValues = paddingValues)
-    }
-}
+    }// Fin Scafold
+}// Fin MainScreen
 
-
-@Composable
-fun TemperatureScreen(viewModel: AppViewModel) {
-    Text(text = "Pantalla de Conversión de Temperatura")
-}
-
-@Composable
-fun TimeScreen(viewModel: AppViewModel, city: String) {
-    Text(text = "Pantalla de Hora en las ciudades - Ciudad actual: $city")
-}
-
-@Composable
-fun DataScreen(viewModel: AppViewModel) {
-    Text(text = "Pantalla de Contactos")
-}
 
 
 // Preview de MainScreen
