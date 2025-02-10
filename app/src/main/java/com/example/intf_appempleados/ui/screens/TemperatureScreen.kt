@@ -37,54 +37,72 @@ fun TemperatureScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
     // Variables para manejar la temperatura y el tipo de escala
     var temperature by remember { mutableStateOf(0f) }
     var isCelsius by remember { mutableStateOf(true) }
-    var savedTemperatures = remember { mutableStateListOf<String>() }
+    var savedTemperatures = remember { mutableStateListOf<Pair<String, Int>>() } // Guardamos la temperatura y el icono asociado
+    var savedIcon by remember { mutableStateOf<Int>(R.drawable.cold_temperature_logo) } // Guardar icono guardado
 
     // Función para convertir de Celsius a Fahrenheit
     fun celsiusToFahrenheit(celsius: Float) = (celsius * 9 / 5) + 32
 
-    // Función para guardar la temperatura y mostrar el icono correspondiente
-    fun saveTemperature() {
-        val tempCelsius = if (isCelsius) temperature else (temperature - 32) * 5 / 9
-        val tempFahrenheit = celsiusToFahrenheit(tempCelsius)
-        val tempString = "${tempCelsius.toInt()} ºC - ${tempFahrenheit.toInt()} ºF"
+    // Función para convertir de Fahrenheit a Celsius
+    fun fahrenheitToCelsius(fahrenheit: Float) = (fahrenheit - 32) * 5 / 9
 
+    // Función para obtener el icono correspondiente según la temperatura
+    fun getTemperatureIcon(tempCelsius: Float): Int {
+        return when {
+            tempCelsius <= 12 -> R.drawable.cold_temperature_logo // Icono frío
+            tempCelsius <= 25 -> R.drawable.heat_temperature_logo // Icono templado
+            else -> R.drawable.hot_temperature_logo // Icono calor
+        }
+    }
+
+    // Función para guardar la temperatura y el icono
+    fun saveTemperature() {
+        // Convertir la temperatura a Celsius si está en Fahrenheit
+        val tempCelsius = if (isCelsius) temperature else fahrenheitToCelsius(temperature)
+
+        // Convertir Celsius a Fahrenheit para mostrar ambos valores
+        val tempFahrenheit = celsiusToFahrenheit(tempCelsius)
+
+        // Obtener el icono correspondiente
+        val iconRes = getTemperatureIcon(tempCelsius)
+
+        // Limitar el número de temperaturas guardadas a 50
         if (savedTemperatures.size == 50) {
             savedTemperatures.removeAt(0)  // Eliminar el primer registro si hay más de 50
         }
 
-        savedTemperatures.add(tempString)
-    }
+        // Guardar la temperatura y el icono
+        savedTemperatures.add(Pair("${tempCelsius.toInt()} ºC - ${tempFahrenheit.toInt()} ºF", iconRes))
 
-    // Función que asigna el icono basado en la temperatura
-    val getTemperatureIcon = {
-        when {
-            temperature <= 12 -> R.drawable.cold_temperature_logo // Icono frío
-            temperature <= 25 -> R.drawable.heat_temperature_logo // Icono templado
-            else -> R.drawable.hot_temperature_logo // Icono calor
-        }
+        // Guardar el icono actual
+        savedIcon = iconRes
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues), // Ocupa pantalala según tamaño del topBar y bottomBar
+            .padding(paddingValues), // Ocupa pantalla según tamaño del topBar y bottomBar
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Imagen que cambia según la temperatura
+        // Mostrar el icono correspondiente a la temperatura
         Image(
-            painter = painterResource(id = getTemperatureIcon()), // Usar la función para obtener el icono
+            painter = painterResource(id = getTemperatureIcon(if (isCelsius) temperature else fahrenheitToCelsius(temperature))),
             contentDescription = "Imagen de Temperatura",
             modifier = Modifier.size(250.dp)
         )
 
         // Slider para ajustar la temperatura
         Slider(
-            value = temperature,
-            onValueChange = { temperature = it },
+            value = if (isCelsius) temperature else fahrenheitToCelsius(temperature),
+            onValueChange = { temp ->
+                // Cambiar la temperatura en la escala seleccionada
+                temperature = if (isCelsius) temp else celsiusToFahrenheit(temp)
+            },
             valueRange = -30f..55f,
             steps = 85,
-            modifier = Modifier.fillMaxWidth(),
-            onValueChangeFinished = { saveTemperature() }
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 4.dp) // Añadir padding en los lados
         )
 
         // Mostrar la temperatura seleccionada en Celsius o Fahrenheit
@@ -129,13 +147,13 @@ fun TemperatureScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
-            savedTemperatures.forEach { temp ->
+            savedTemperatures.forEach { (temp, iconRes) ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Image(
-                        painter = painterResource(id = getTemperatureIcon()), // Usar el mismo icono
+                        painter = painterResource(id = iconRes), // Usar el icono guardado
                         contentDescription = "Icono Temperatura",
                         modifier = Modifier.size(24.dp)
                     )

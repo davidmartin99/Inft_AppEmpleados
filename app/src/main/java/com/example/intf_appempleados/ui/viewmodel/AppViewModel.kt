@@ -17,6 +17,7 @@ class AppViewModel : ViewModel() {
     // Teléfonos de contacto
     var contacts: Map<String, String> by mutableStateOf(emptyMap())
 
+
     // Funciones para conversión de temperatura
     fun convertCelsiusToFahrenheit(celsius: String) {
         val celsiusValue = celsius.toDoubleOrNull()
@@ -31,6 +32,7 @@ class AppViewModel : ViewModel() {
             temperatureCelsius = ((fahrenheitValue - 32) * 5 / 9).toString()
         }
     }
+
 
     // Funciones para manejo de horas
     fun updateCityTimes(currentCity: String) {
