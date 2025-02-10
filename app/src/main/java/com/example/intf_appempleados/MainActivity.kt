@@ -5,19 +5,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -37,13 +36,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
-import com.example.intf_appempleados.ui.viewmodel.AppViewModel
+import com.example.compose.primaryLight
+import com.example.compose.secondaryLight
 import com.example.intf_appempleados.navigation.SetupNavGraph
-import com.example.intf_appempleados.ui.theme.GreenColor
-import com.example.intf_appempleados.ui.theme.RedColor
-import com.example.intf_appempleados.ui.theme.SpectralFontFamily
-import com.example.intf_appempleados.ui.theme.YellowColor
-
+import com.example.intf_appempleados.ui.viewmodel.AppViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,12 +71,8 @@ fun MainScreen(viewModel: AppViewModel) {
 
                         Text(
                             text = "Splanot",
-                            style = TextStyle(
-                                fontFamily = SpectralFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 26.sp, // Título más grande
-                                color = Color.White
-                            ),
+                            style = MaterialTheme.typography.titleLarge,  // Usa la tipografía definida
+                            color = Color.White,
                             modifier = Modifier.padding(start = 8.dp)
                         )
                     }
@@ -94,15 +86,14 @@ fun MainScreen(viewModel: AppViewModel) {
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Companion.Gray
-
+                    containerColor = primaryLight  // Uso los colores de theme
                 )
 
             )
         },
         bottomBar = {
             BottomAppBar(
-                containerColor = Color.Companion.Gray,
+                containerColor = secondaryLight, // Uso los colores de theme
                 contentColor = Color.White,
             ) {
                 Row(

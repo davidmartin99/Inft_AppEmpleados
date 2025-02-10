@@ -1,72 +1,53 @@
-package com.example.intf_appempleados.ui.theme
+package com.example.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+
+import androidx.compose.ui.text.googlefonts.GoogleFont
+import androidx.compose.ui.text.googlefonts.Font
 import com.example.intf_appempleados.R
 
-
-// Definir la fuente Montserrat con diferentes pesos
-val MontserratFontFamily = FontFamily(
-    Font(R.font.montserrat_regular, FontWeight.Normal),
-    Font(R.font.montserrat_bold, FontWeight.Bold),
-    Font(R.font.montserrat_italic)
+val provider = GoogleFont.Provider(
+    providerAuthority = "com.google.android.gms.fonts",
+    providerPackage = "com.google.android.gms",
+    certificates = R.array.com_google_android_gms_fonts_certs
 )
 
-// Definir la fuente Spectral con diferentes pesos
-val SpectralFontFamily = FontFamily(
-    Font(R.font.spectral_regular, FontWeight.Normal),
-    Font(R.font.spectral_bold, FontWeight.Bold),
-    Font(R.font.spectral_italic)
-)
-
-// Configurar la tipografía de la app
-val Typography = Typography(
-    // Texto grande (normal) con Montserrat
-    bodyLarge = TextStyle(
-        fontFamily = MontserratFontFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 18.sp, // Tamaño más grande para buena legibilidad
-        lineHeight = 26.sp,
-        letterSpacing = 0.5.sp
-    ),
-
-    // Texto mediano con Montserrat
-    bodyMedium = TextStyle(
-        fontFamily = MontserratFontFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    ),
-
-    // Texto pequeño con Montserrat
-    bodySmall = TextStyle(
-        fontFamily = MontserratFontFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        lineHeight = 22.sp,
-        letterSpacing = 0.5.sp
-    ),
-
-    // Títulos con Spectral
-    titleLarge = TextStyle(
-        fontFamily = SpectralFontFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-
-    // Etiquetas o subtítulos con Montserrat
-    labelSmall = TextStyle(
-        fontFamily = MontserratFontFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
+val bodyFontFamily = FontFamily(
+    Font(
+        googleFont = GoogleFont("Spectral"),
+        fontProvider = provider,
     )
 )
+
+val displayFontFamily = FontFamily(
+    Font(
+        googleFont = GoogleFont("Montserrat"),
+        fontProvider = provider,
+    )
+)
+
+// Default Material 3 typography values
+val baseline = Typography()
+
+val AppTypography = Typography(
+    displayLarge = baseline.displayLarge.copy(fontFamily = displayFontFamily),
+    displayMedium = baseline.displayMedium.copy(fontFamily = displayFontFamily),
+    displaySmall = baseline.displaySmall.copy(fontFamily = displayFontFamily),
+    headlineLarge = baseline.headlineLarge.copy(fontFamily = displayFontFamily),
+    headlineMedium = baseline.headlineMedium.copy(fontFamily = displayFontFamily),
+    headlineSmall = baseline.headlineSmall.copy(fontFamily = displayFontFamily),
+    titleLarge = baseline.titleLarge.copy(fontFamily = displayFontFamily),
+    titleMedium = baseline.titleMedium.copy(fontFamily = displayFontFamily),
+    titleSmall = baseline.titleSmall.copy(fontFamily = displayFontFamily),
+    bodyLarge = baseline.bodyLarge.copy(fontFamily = bodyFontFamily),
+    bodyMedium = baseline.bodyMedium.copy(fontFamily = bodyFontFamily),
+    bodySmall = baseline.bodySmall.copy(fontFamily = bodyFontFamily),
+    labelLarge = baseline.labelLarge.copy(fontFamily = bodyFontFamily),
+    labelMedium = baseline.labelMedium.copy(fontFamily = bodyFontFamily),
+    labelSmall = baseline.labelSmall.copy(fontFamily = bodyFontFamily),
+)
+
