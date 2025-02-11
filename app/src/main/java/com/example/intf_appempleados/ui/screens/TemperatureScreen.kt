@@ -2,6 +2,7 @@ package com.example.intf_appempleados.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -84,12 +85,26 @@ fun TemperatureScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
             .padding(paddingValues), // Ocupa pantalla según tamaño del topBar y bottomBar
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Mostrar el icono correspondiente a la temperatura
-        Image(
-            painter = painterResource(id = getTemperatureIcon(if (isCelsius) temperature else fahrenheitToCelsius(temperature))),
-            contentDescription = "Imagen de Temperatura",
+        // Mostrar la temperatura seleccionada en Celsius o Fahrenheit arriba del icono
+        Box(
+            contentAlignment = Alignment.Center, // Centra el contenido dentro del Box
             modifier = Modifier.size(250.dp)
-        )
+        ) {
+            // Imagen de temperatura
+            Image(
+                painter = painterResource(id = getTemperatureIcon(if (isCelsius) temperature else fahrenheitToCelsius(temperature))),
+                contentDescription = "Imagen de Temperatura",
+                modifier = Modifier.size(250.dp)
+            )
+
+            // Texto superpuesto sobre la imagen
+            Text(
+                text = "Temperatura: ${temperature.toInt()} ${if (isCelsius) "ºC" else "ºF"}",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
 
         // Slider para ajustar la temperatura
         Slider(
@@ -103,14 +118,6 @@ fun TemperatureScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 4.dp) // Añadir padding en los lados
-        )
-
-        // Mostrar la temperatura seleccionada en Celsius o Fahrenheit
-        Text(
-            text = "Temperatura: ${temperature.toInt()} ${if (isCelsius) "ºC" else "ºF"}",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(vertical = 16.dp)
         )
 
         // Opciones para cambiar entre Celsius y Fahrenheit
