@@ -5,8 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.empleadosmultinacional.ui.screens.DataScreen
 import com.example.intf_appempleados.ui.screens.TemperatureScreen
-import com.example.intf_appempleados.ui.screens.DataScreen
 import com.example.intf_appempleados.ui.screens.TimeScreen
 import com.example.intf_appempleados.ui.viewmodel.AppViewModel
 

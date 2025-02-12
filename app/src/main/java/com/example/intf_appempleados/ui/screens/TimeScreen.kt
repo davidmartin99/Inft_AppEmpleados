@@ -160,7 +160,6 @@ fun TimeScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text("Oficinas")
         LazyColumn {
             items(ciudades.filter { it != ciudadSeleccionada }) { (nombre, zona) ->
                 val horaLocal = horaReferencia.withZoneSameInstant(ZoneId.of(zona))
