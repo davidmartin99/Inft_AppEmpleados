@@ -260,7 +260,8 @@ val unspecified_scheme = ColorFamily(
 fun AppTheme(
     content: @Composable() () -> Unit
 ) {
-    val colorScheme = mediumContrastLightColorScheme // Always use this color scheme
+    // Modifico los colores cambiando el colorScheme
+    val colorScheme = mediumContrastLightColorScheme
 
     MaterialTheme(
         colorScheme = colorScheme,
