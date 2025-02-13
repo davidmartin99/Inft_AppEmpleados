@@ -50,10 +50,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             // Aplica el tema global a toda la app usando el tema personalizado
-            AppTheme(
-                darkTheme = isSystemInDarkTheme(),  // Determina si el sistema usa el modo oscuro o claro
-                dynamicColor = true  // Activa colores dinámicos si el sistema lo soporta
-            ) {
+            AppTheme {
                 // Componente principal de la app
                 MainScreen(viewModel = AppViewModel())
             }

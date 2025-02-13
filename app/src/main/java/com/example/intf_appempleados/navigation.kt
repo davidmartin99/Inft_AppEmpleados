@@ -17,7 +17,10 @@ fun SetupNavGraph(
     viewModel: AppViewModel,
     paddingValues: PaddingValues
 ) {
-    NavHost(navController = navController, startDestination = "temperature") {
+    NavHost(
+        navController = navController,
+        startDestination = "temperature" // Pantalla de arranque
+    ) {
         composable("temperature") {
             TemperatureScreen(viewModel = viewModel, paddingValues = paddingValues)
         }

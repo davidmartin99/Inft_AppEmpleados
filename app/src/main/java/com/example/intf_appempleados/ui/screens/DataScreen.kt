@@ -24,7 +24,11 @@ fun DataScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
     val contactoInfo = contactos[ciudadSeleccionada]?.get(servicioSeleccionado)
     val imagenPais = imagenesPaises[ciudadSeleccionada] ?: R.drawable.global
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues), // Ocupa pantalla según tamaño del topBar y bottomBar
+    ) {
 
         // Selector de Ciudad
         SelectorDropdown(
