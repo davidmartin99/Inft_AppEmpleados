@@ -27,10 +27,11 @@ fun DataScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(horizontal = 20.dp)
             .padding(paddingValues), // Ocupa pantalla según tamaño del topBar y bottomBar
     ) {
 
-        // Selector de Ciudad
+        // Función de Selector de Ciudad
         SelectorDropdown(
             label = "Ciudad",
             opciones = ciudadesContacto,
@@ -38,9 +39,9 @@ fun DataScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
             onSeleccionChange = { ciudadSeleccionada = it }
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(15.dp))
 
-        // Selector de Servicio debajo de Ciudad
+        // Función de Selector de Servicio debajo de Ciudad
         SelectorDropdown(
             label = "Servicio",
             opciones = listOf("Emergencias") + servicios.filter { it != "Emergencias" },
@@ -77,7 +78,7 @@ fun DataScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
             Spacer(modifier = Modifier.height(8.dp))
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.padding(horizontal = 20.dp)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(text = "Contacto: $nombre", style = MaterialTheme.typography.titleMedium)
@@ -85,7 +86,7 @@ fun DataScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
                     Text(text = "Email: ${contactoInfo.emailContacto}", style = MaterialTheme.typography.bodyLarge)
                 }
             }
-        }
+        }// Fin Contact info
     }
 }
 

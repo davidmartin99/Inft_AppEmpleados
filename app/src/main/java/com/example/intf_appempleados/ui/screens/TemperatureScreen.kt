@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
@@ -73,7 +74,7 @@ fun TemperatureScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
         }
 
         // Guardar la temperatura y el icono
-        savedTemperatures.add(Pair("${tempCelsius.toInt()} ºC - ${tempFahrenheit.toInt()} ºF", iconRes))
+        savedTemperatures.add(Pair("${tempCelsius.toInt()} ºC / ${tempFahrenheit.toInt()} ºF", iconRes))
 
         // Guardar el icono actual
         savedIcon = iconRes
@@ -82,7 +83,8 @@ fun TemperatureScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues), // Ocupa pantalla según tamaño del topBar y bottomBar
+            .padding(paddingValues) // Ocupa pantalla según tamaño del topBar y bottomBar
+            .padding(horizontal = 16.dp), // Agrega padding a los lados
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Mostrar la temperatura seleccionada en Celsius o Fahrenheit arriba del icono
@@ -99,10 +101,11 @@ fun TemperatureScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
 
             // Texto superpuesto sobre la imagen
             Text(
-                text = "Temperatura: ${temperature.toInt()} ${if (isCelsius) "ºC" else "ºF"}",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+                text = "${temperature.toInt()}ºC / ${celsiusToFahrenheit(temperature).toInt()}ºF",
+                fontSize = 40.sp,
+                style = MaterialTheme.typography.titleLarge // Aplicar fuentes del MaterialTheme
             )
+
         }
 
 
@@ -117,6 +120,7 @@ fun TemperatureScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
             steps = 85,
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(horizontal = 10.dp)
                 .padding(horizontal = 4.dp) // Añadir padding en los lados
         )
 
@@ -125,13 +129,13 @@ fun TemperatureScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Celsius")
+            Text("Celsius", style = MaterialTheme.typography.bodyMedium)
             RadioButton(
                 selected = isCelsius,
                 onClick = { isCelsius = true }
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Text("Fahrenheit")
+            Text("Fahrenheit", style = MaterialTheme.typography.bodyMedium)
             RadioButton(
                 selected = !isCelsius,
                 onClick = { isCelsius = false }
@@ -143,7 +147,7 @@ fun TemperatureScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
             onClick = { saveTemperature() },
             modifier = Modifier.padding(vertical = 16.dp)
         ) {
-            Text(text = "Guardar Temperatura")
+            Text(text = "Guardar Temperatura", style = MaterialTheme.typography.titleLarge)
         }
 
         // Mostrar las últimas temperaturas guardadas
@@ -151,7 +155,7 @@ fun TemperatureScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
             Text(
                 text = "Últimas Temperaturas",
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleSmall,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
             savedTemperatures.forEach { (temp, iconRes) ->
@@ -167,6 +171,7 @@ fun TemperatureScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
                     Text(
                         text = temp,
                         fontSize = 16.sp,
+                        style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.weight(1f)
                     )
                 }

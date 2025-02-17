@@ -20,44 +20,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.intf_appempleados.R
+import com.example.intf_appempleados.data.ciudades
 import com.example.intf_appempleados.ui.viewmodel.AppViewModel
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import com.example.intf_appempleados.data.imagenesPaises
+import com.example.intf_appempleados.data.imagenesPaisesTime
 
-// Definir las ciudades con sus zonas horarias
-val ciudades = listOf(
-    "Madrid" to "Europe/Madrid",
-    "París" to "Europe/Paris",
-    "Londres" to "Europe/London",
-    "Porto Alegre" to "America/Sao_Paulo",
-    "Acapulco" to "America/Mexico_City",
-    "Vancouver" to "America/Vancouver",
-    "Houston" to "America/Chicago",
-    "Casablanca" to "Africa/Casablanca",
-    "Osaka" to "Asia/Tokyo",
-    "Melbourne" to "Australia/Melbourne",
-    "Ankara" to "Europe/Istanbul",
-    "Dubai" to "Asia/Dubai"
-)
-
-// Mapa de imágenes por ciudad
-val imagenesPaises = mapOf(
-    "Madrid" to R.drawable.mapa_espana,
-    "París" to R.drawable.mapa_francia,
-    "Londres" to R.drawable.mapa_reino_unido,
-    "Porto Alegre" to R.drawable.mapa_brasil,
-    "Acapulco" to R.drawable.mapa_mexico,
-    "Vancouver" to R.drawable.mapa_canada,
-    "Houston" to R.drawable.mapa_eeuu,
-    "Casablanca" to R.drawable.mapa_marruecos,
-    "Osaka" to R.drawable.mapa_japon,
-    "Melbourne" to R.drawable.mapa_australia,
-    "Ankara" to R.drawable.mapa_turquia,
-    "Dubai" to R.drawable.mapa_emiratos
-)
 
 @Composable
 fun TimeScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
@@ -65,6 +37,9 @@ fun TimeScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
     var horaSeleccionada by remember { mutableStateOf(LocalTime.now()) }
     val formatter = DateTimeFormatter.ofPattern("HH:mm")
     val context = LocalContext.current
+    val imagenCiudad = imagenesPaisesTime[ciudadSeleccionada.first] ?: R.drawable.global
+
+
 
     Column(
         modifier = Modifier
@@ -104,8 +79,6 @@ fun TimeScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
             zonaHoraria
         )
 
-        // Mostrar el mapa, el nombre de la ciudad y la hora en la ciudad seleccionada
-        val imagenCiudad = imagenesPaises[ciudadSeleccionada.first] ?: R.drawable.global
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -164,6 +137,10 @@ fun TimeScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
             items(ciudades.filter { it != ciudadSeleccionada }) { (nombre, zona) ->
                 val horaLocal = horaReferencia.withZoneSameInstant(ZoneId.of(zona))
 
+                // Obtén la imagen correspondiente a la ciudad en el LazyColumn
+                val imagenCiudadLazy = imagenesPaisesTime[nombre] ?: R.drawable.global
+
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -171,18 +148,20 @@ fun TimeScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween // Distribuye los elementos uniformemente
                 ) {
+                    // Imagen correspondiente a la ciudad
                     Image(
-                        painter = painterResource(id = imagenesPaises[nombre] ?: R.drawable.global),
+                        painter = painterResource(id = imagenCiudadLazy),
                         contentDescription = "Mapa de $nombre",
                         modifier = Modifier.size(60.dp) // Imagen más pequeña
                     )
 
+                    // Nombre de la ciudad
                     Text(
                         text = nombre,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.weight(1f) // Hace que el texto ocupe espacio uniforme
+                        modifier = Modifier.weight(1f)
                     )
 
                     Text(
