@@ -2,6 +2,10 @@ package com.example.intf_appempleados.data
 
 import com.example.intf_appempleados.R
 
+/**
+ * Clase ContactInfo
+ * Recoge todos los datos necesarios que va a utilizar la aplicación
+ */
 data class ContactInfo(
     val telefono: String,
     val nombreContacto: String? = null,
@@ -23,37 +27,6 @@ val ciudadesContacto = listOf(
     "Melbourne, Australia",
     "Ankara, Turquía",
     "Dubai, Emiratos Árabes Unidos"
-)
-// Definir las ciudades con sus zonas horarias
-val ciudades = listOf(
-    "Madrid" to "Europe/Madrid",
-    "París" to "Europe/Paris",
-    "Londres" to "Europe/London",
-    "Porto Alegre" to "America/Sao_Paulo",
-    "Acapulco" to "America/Mexico_City",
-    "Vancouver" to "America/Vancouver",
-    "Houston" to "America/Chicago",
-    "Casablanca" to "Africa/Casablanca",
-    "Osaka" to "Asia/Tokyo",
-    "Melbourne" to "Australia/Melbourne",
-    "Ankara" to "Europe/Istanbul",
-    "Dubai" to "Asia/Dubai"
-)
-
-// Mapa de imágenes por ciudad
-val imagenesPaisesTime = mapOf(
-    "Madrid" to R.drawable.mapa_espana,
-    "París" to R.drawable.mapa_francia,
-    "Londres" to R.drawable.mapa_reino_unido,
-    "Porto Alegre" to R.drawable.mapa_brasil,
-    "Acapulco" to R.drawable.mapa_mexico,
-    "Vancouver" to R.drawable.mapa_canada,
-    "Houston" to R.drawable.mapa_eeuu,
-    "Casablanca" to R.drawable.mapa_marruecos,
-    "Osaka" to R.drawable.mapa_japon,
-    "Melbourne" to R.drawable.mapa_australia,
-    "Ankara" to R.drawable.mapa_turquia,
-    "Dubai" to R.drawable.mapa_emiratos
 )
 
 // Mapa de imágenes de cada país (debes agregar los recursos en res/drawable)

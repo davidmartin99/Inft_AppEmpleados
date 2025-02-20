@@ -1,181 +1,186 @@
 package com.example.intf_appempleados.ui.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Slider
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.intf_appempleados.R
-import com.example.intf_appempleados.ui.viewmodel.AppViewModel
-
+import com.example.intf_appempleados.ui.viewmodel.TemperatureViewModel
 
 @Composable
-fun TemperatureScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
-    // Variables para manejar la temperatura y el tipo de escala
-    var temperature by remember { mutableStateOf(0f) }
-    var isCelsius by remember { mutableStateOf(true) }
-    var savedTemperatures = remember { mutableStateListOf<Pair<String, Int>>() } // Guardamos la temperatura y el icono asociado
-    var savedIcon by remember { mutableStateOf<Int>(R.drawable.cold_temperature_logo) } // Guardar icono guardado
+fun TemperatureScreen(viewModel: TemperatureViewModel = viewModel()) {
+    // Obtener el valor de la temperatura, si se está usando Celsius y el historial de temperaturas desde el ViewModel
+    val temperatura by viewModel.temperature.collectAsState()
+    val esCelsius by viewModel.esCelsius.collectAsState()
+    val historial by viewModel.historial.collectAsState()
 
-    // Función para convertir de Celsius a Fahrenheit
-    fun celsiusToFahrenheit(celsius: Float) = (celsius * 9 / 5) + 32
+    // Convertir la temperatura si es necesario
+    val temperaturaConvertida = if (esCelsius) (temperatura * 9 / 5 + 32).toInt()
+    else ((temperatura - 32) * 5 / 9).toInt()
 
-    // Función para convertir de Fahrenheit a Celsius
-    fun fahrenheitToCelsius(fahrenheit: Float) = (fahrenheit - 32) * 5 / 9
-
-    // Función para obtener el icono correspondiente según la temperatura
-    fun getTemperatureIcon(tempCelsius: Float): Int {
-        return when {
-            tempCelsius <= 12 -> R.drawable.cold_temperature_logo // Icono frío
-            tempCelsius <= 25 -> R.drawable.heat_temperature_logo // Icono templado
-            else -> R.drawable.hot_temperature_logo // Icono calor
-        }
-    }
-
-    // Función para guardar la temperatura y el icono
-    fun saveTemperature() {
-        // Convertir la temperatura a Celsius si está en Fahrenheit
-        val tempCelsius = if (isCelsius) temperature else fahrenheitToCelsius(temperature)
-
-        // Convertir Celsius a Fahrenheit para mostrar ambos valores
-        val tempFahrenheit = celsiusToFahrenheit(tempCelsius)
-
-        // Obtener el icono correspondiente
-        val iconRes = getTemperatureIcon(tempCelsius)
-
-        // Limitar el número de temperaturas guardadas a 50
-        if (savedTemperatures.size == 50) {
-            savedTemperatures.removeAt(0)  // Eliminar el primer registro si hay más de 50
-        }
-
-        // Guardar la temperatura y el icono
-        savedTemperatures.add(Pair("${tempCelsius.toInt()} ºC / ${tempFahrenheit.toInt()} ºF", iconRes))
-
-        // Guardar el icono actual
-        savedIcon = iconRes
+    // Definir la imagen en función de la temperatura
+    val imagenTemperatura = when {
+        temperatura.toInt() <= 12 -> R.drawable.cold_temperature_logo
+        temperatura.toInt() in 13..25 -> R.drawable.heat_temperature_logo
+        else -> R.drawable.hot_temperature_logo
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues) // Ocupa pantalla según tamaño del topBar y bottomBar
-            .padding(horizontal = 16.dp), // Agrega padding a los lados
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxSize().padding(16.dp), // Configura el layout de la columna
+        horizontalAlignment = Alignment.CenterHorizontally // Centra los elementos
     ) {
-        // Mostrar la temperatura seleccionada en Celsius o Fahrenheit arriba del icono
+        // Contenedor de imagen con el logo de temperatura
         Box(
-            contentAlignment = Alignment.Center, // Centra el contenido dentro del Box
-            modifier = Modifier.size(250.dp)
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            // Imagen de temperatura
+            // Muestra la imagen relacionada con la temperatura
             Image(
-                painter = painterResource(id = getTemperatureIcon(if (isCelsius) temperature else fahrenheitToCelsius(temperature))),
-                contentDescription = "Imagen de Temperatura",
-                modifier = Modifier.size(250.dp)
+                painter = painterResource(id = imagenTemperatura),
+                contentDescription = "Imagen de temperatura",
+                modifier = Modifier.size(280.dp)
             )
 
-            // Texto superpuesto sobre la imagen
+            // Muestra el texto de la temperatura en Celsius y Fahrenheit, encima de la imagen
             Text(
-                text = "${temperature.toInt()}ºC / ${celsiusToFahrenheit(temperature).toInt()}ºF",
-                fontSize = 40.sp,
-                style = MaterialTheme.typography.titleLarge // Aplicar fuentes del MaterialTheme
+                text = "${temperatura.toInt()} ${if (esCelsius) "°C" else "°F"}   " +
+                        "$temperaturaConvertida ${if (esCelsius) "°F" else "°C"}",
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.displayMedium.copy(
+                    fontWeight = FontWeight.Bold, // Aplica negrita al texto
+                    shadow = Shadow(
+                        color = MaterialTheme.colorScheme.onTertiaryContainer, // Color de la sombra
+                        offset = Offset(9f, 7f), // Posición de la sombra
+                        blurRadius = 7f // Difuminado de la sombra
+                    )
+                ),
+                modifier = Modifier.align(Alignment.Center), // Alinea el texto en el centro
             )
-
         }
 
+        Spacer(modifier = Modifier.height(15.dp)) // Espacio entre la imagen y los botones
+
+        // Selección de unidades Celsius o Fahrenheit con botones
+        Row(
+            horizontalArrangement = Arrangement.Center, // Centra los botones
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            // Botón para seleccionar Celsius
+            Button(
+                onClick = { if (!esCelsius) viewModel.cambiarUnidad() }, // Cambia la unidad
+                colors = ButtonDefaults.buttonColors(containerColor = if (esCelsius) MaterialTheme.colorScheme.primary else Color.LightGray)
+            ) {
+                Text("Celsius", color = Color.White) // Texto en el botón
+            }
+            Spacer(modifier = Modifier.width(16.dp)) // Espacio entre los botones
+            // Botón para seleccionar Fahrenheit
+            Button(
+                onClick = { if (esCelsius) viewModel.cambiarUnidad() }, // Cambia la unidad
+                colors = ButtonDefaults.buttonColors(containerColor = if (!esCelsius) MaterialTheme.colorScheme.primary else Color.LightGray)
+            ) {
+                Text("Fahrenheit", color = Color.White) // Texto en el botón
+            }
+        }
+
+        Spacer(modifier = Modifier.height(13.dp)) // Espacio entre los botones y el slider
 
         // Slider para ajustar la temperatura
         Slider(
-            value = if (isCelsius) temperature else fahrenheitToCelsius(temperature),
-            onValueChange = { temp ->
-                // Cambiar la temperatura en la escala seleccionada
-                temperature = if (isCelsius) temp else celsiusToFahrenheit(temp)
-            },
-            valueRange = -30f..55f,
-            steps = 85,
+            value = temperatura,
+            onValueChange = { viewModel.cambiarTemperatura(it) }, // Cambia la temperatura
+            valueRange = if (esCelsius) -30f..55f else -22f..131f, // Rango de valores según la unidad
+            colors = SliderDefaults.colors(
+                thumbColor = MaterialTheme.colorScheme.primary, // Color del pulgar
+                activeTrackColor = MaterialTheme.colorScheme.primaryContainer, // Color de la pista activa
+                inactiveTrackColor = Color.LightGray // Color de la pista inactiva
+            ),
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp)
-                .padding(horizontal = 4.dp) // Añadir padding en los lados
+                .fillMaxWidth(0.85f) // Hace el slider más ancho
+                .height(24.dp) // Ajusta la altura del slider
         )
 
-        // Opciones para cambiar entre Celsius y Fahrenheit
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Celsius", style = MaterialTheme.typography.bodyMedium)
-            RadioButton(
-                selected = isCelsius,
-                onClick = { isCelsius = true }
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Text("Fahrenheit", style = MaterialTheme.typography.bodyMedium)
-            RadioButton(
-                selected = !isCelsius,
-                onClick = { isCelsius = false }
-            )
-        }
+        Spacer(modifier = Modifier.height(16.dp)) // Espacio entre el slider y el botón de guardar
 
-        // Botón para guardar la temperatura
+        // Botón de guardar
         Button(
-            onClick = { saveTemperature() },
-            modifier = Modifier.padding(vertical = 16.dp)
+            onClick = { viewModel.guardarTemperatura() }, // Guarda la temperatura
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+            modifier = Modifier
+                .fillMaxWidth(0.4f) // Hace el botón más pequeño
+                .height(38.dp) // Ajusta la altura del botón
         ) {
-            Text(text = "Guardar Temperatura", style = MaterialTheme.typography.titleLarge)
+            Text(
+                "Guardar",
+                fontSize = 14.sp, // Tamaño de la fuente en el botón
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold // Aplica negrita al texto
+            )
         }
 
-        // Mostrar las últimas temperaturas guardadas
-        Column(modifier = Modifier.fillMaxHeight()) {
-            Text(
-                text = "Últimas Temperaturas",
-                fontSize = 18.sp,
-                style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-            savedTemperatures.forEach { (temp, iconRes) ->
+        Spacer(modifier = Modifier.height(16.dp)) // Espacio entre el botón de guardar y el historial
+
+        // Historial de temperaturas con iconos y texto
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize(), // Ocupa todo el espacio disponible
+            verticalArrangement = Arrangement.Center, // Centra los elementos verticalmente
+            horizontalAlignment = Alignment.CenterHorizontally // Centra los elementos horizontalmente
+        ) {
+            // Itera sobre el historial de temperaturas
+            items(historial) { temp ->
                 Row(
+                    modifier = Modifier.fillMaxWidth().padding(8.dp)
+                        .background(color = MaterialTheme.colorScheme.onSecondary),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+                    // Determina el icono en función de la temperatura
+                    val icono = when {
+                        temp.first <= 12 -> R.drawable.cold_temperature_logo
+                        temp.first in 13..25 -> R.drawable.heat_temperature_logo
+                        else -> R.drawable.hot_temperature_logo
+                    }
+
+                    // Muestra el icono de la temperatura
                     Image(
-                        painter = painterResource(id = iconRes), // Usar el icono guardado
-                        contentDescription = "Icono Temperatura",
-                        modifier = Modifier.size(24.dp)
+                        painter = painterResource(id = icono),
+                        contentDescription = "Icono temperatura",
+                        modifier = Modifier.size(30.dp) // Hace el icono más pequeño
                     )
+
+                    Spacer(modifier = Modifier.width(5.dp)) // Espacio entre el icono y el texto
+
+                    // Muestra la temperatura en Celsius y Fahrenheit
                     Text(
-                        text = temp,
-                        fontSize = 16.sp,
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.weight(1f)
+                        text = "${temp.first}°C   ${temp.second}°F",
+                        fontSize = 18.sp, // Tamaño de la fuente más pequeño
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold, // Aplica negrita al texto
+                        style = MaterialTheme.typography.bodyLarge // Estilo de texto
                     )
                 }
             }
         }
     }
+}
+
+// Vista previa de la pantalla de temperatura
+@Preview(showBackground = true)
+@Composable
+fun PreviewTemperaturaScreen() {
+    TemperatureScreen() // Muestra la pantalla de temperatura en la vista previa
 }

@@ -92,6 +92,7 @@ private val darkScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDark,
 )
 
+// Uso este
 private val mediumContrastLightColorScheme = lightColorScheme(
     primary = primaryLightMediumContrast,
     onPrimary = onPrimaryLightMediumContrast,
@@ -252,9 +253,6 @@ data class ColorFamily(
     val onColorContainer: Color
 )
 
-val unspecified_scheme = ColorFamily(
-    Color.Unspecified, Color.Unspecified, Color.Unspecified, Color.Unspecified
-)
 
 @Composable
 fun AppTheme(
@@ -264,8 +262,8 @@ fun AppTheme(
     val colorScheme = mediumContrastLightColorScheme
 
     MaterialTheme(
-        colorScheme = colorScheme,
-        typography = AppTypography,
+        colorScheme = colorScheme, // Colores
+        typography = AppTypography, // Fuentes
         content = content
     )
 }
