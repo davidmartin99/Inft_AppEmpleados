@@ -18,14 +18,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge() // Habilita el modo edge-to-edge (pantalla completa sin márgenes)
         setContent {
-            Intf_AppEmpleados() // Establece la función composable que define la UI
+            Intf_AppEmpleados2() // Establece la función composable que define la UI
         }
     }
 }
 
 // Composable principal de la aplicación
 @Composable
-fun Intf_AppEmpleados() {
+fun Intf_AppEmpleados2() {
     // Controlador de navegación que maneja las rutas de las pantallas
     val navController = rememberNavController()
 

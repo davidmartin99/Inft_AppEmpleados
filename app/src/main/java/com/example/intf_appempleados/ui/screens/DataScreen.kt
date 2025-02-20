@@ -1,4 +1,4 @@
-package com.example.empleadosmultinacional.ui.screens
+package com.example.intf_appempleados.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
